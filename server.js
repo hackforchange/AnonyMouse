@@ -14,14 +14,13 @@ var MY_HOSTNAME = '4567.localtunnel.com';
 //-------------REQUIRED STUFF-------------
 var express = require('express');
 var app = express.createServer();
-var http = require('http');
 
 MemoryStore = require('connect').session.MemoryStore;
 var sessionStore = new MemoryStore(); //TODO:  Use something more robust instead of memory JEEEEZUS
 
 
 var sys = require('sys'),
-    TwilioClient = require('node-twilio').Client,
+    TwilioClient = require('twilio').Client,
     client = new TwilioClient(ACCOUNT_SID, AUTH_TOKEN, MY_HOSTNAME),
     newSeedPhone = client.getPhoneNumber('+14158774471');
     //sandboxPhone = client.getPhoneNumber('+14155992671');

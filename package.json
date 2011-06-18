@@ -1,0 +1,9 @@
+{
+  "name": "AnonyMouse",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "2.3.11",
+    "twilio": "0.4.0",
+    "connect": "1.4.5"
+  }
+}
