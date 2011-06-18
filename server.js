@@ -2,12 +2,12 @@
 // By @aashay and @aaronmoy and @ewee
 
 //-------------GLOBAL STUFF-------------
-var PORT = 3000; 
+var PORT = process.env.PORT || 3000; 
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
 var AUTH_TOKEN = '8894ebecf19122c98344b232291dc0bd';
-var MY_HOSTNAME = '4567.localtunnel.com';
+var MY_HOSTNAME = 'anonymouse.herokuapp.com';
 
 //----------------------------------------
 
