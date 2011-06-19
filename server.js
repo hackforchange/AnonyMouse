@@ -3,7 +3,7 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = true;  //for dev
+var CURLONLY = false;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -276,10 +276,14 @@ app.post('/mentor/:username/message', function(req, res){
                     };
                     
                     everyone.now.sendMessage(mentor, reply, function(err,msg){
-                        if(err){res.send("ERROR:" + err)}
+                        var response = "";
+                        if(err){
+                            response = "ERROR:" + err;
+                        }
                         else{
-                            res.send("Mentee texting a mentor; sent: " + JSON.stringify(reply));
-                        }                        
+                            response = "Mentee texting a mentor; sent: " + JSON.stringify(reply);
+                        }
+                        res.send(response);                                               
                     });            
                 }
             });              
@@ -326,7 +330,7 @@ everyone.now.sendMessage = function(mentor, message, callback){
          
          console.log("Twilio tried to sendMessage but failed: " + JSON.stringify(mentor) + " - " + JSON.stringify(message));
          self.now.incomingMessage({"message":"Invalid sid, please set sid"});
-         callback("error",null);
+         callback("No sid",null);
      }        
 }
 
