@@ -47,11 +47,11 @@ exports.getUnanswered = function(callback){
 exports.getMentee = function(phone, callback){
     var query = '{"phone":"' + phone + '"}';    
     var url = menteesUrl + apiKeySuffix + '&q=' + encodeURIComponent(query);
-    
+
     rest.get(url).on('error', function(data, response) {
-        callback("Some error from mongocloud: " + JSON.stringify(data),null);
+        callback("Some error from mongocloud: " + JSON.stringify(data),null);        
     }).on('success', function(data, response) {
-        if(!data){
+        if(!data || data == ""){            
             callback("No data from database", null);
         }else{
             callback(null,data[0]);            

@@ -23,6 +23,9 @@ window.addEvent('load',function(){
         
         console.log(json);
         var message = json.message;
+        if(!json.name){
+            json.name = "AnonyMouse";
+        }
         var m = new Element( 'div', {id:message+"_", html:"<b>" + json.name + ":</b> " + message} );
         $('messages').grab(m);
         
