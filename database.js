@@ -6,6 +6,8 @@ var apiKey = '4dfd63f88d45cb17b77e3ff8';
 //urls
 var rootUrl = 'https://mongolab.com/api/1/databases/heroku_app571123';
 var menteesUrl = rootUrl + '/collections/mentees';
+var mentorsUrl = rootUrl + '/collections/mentors';
+//var chatsUrl = rootUrl + '/collections/chats';
 var apiKeySuffix = '?apiKey=' + apiKey;
 
 exports.createMentee = function (menteePhone, menteeSeed, callback){
@@ -42,3 +44,51 @@ exports.getUnanswered = function(callback){
     });
 }
 
+exports.getMentee = function(phone, callback){
+    var query = '{"phone":"' + phone + '"}';    
+    var url = menteesUrl + apiKeySuffix + '&q=' + encodeURIComponent(query);
+    
+    rest.get(url).on('error', function(data, response) {
+        callback("Some error from mongocloud: " + JSON.stringify(data),null);
+    }).on('success', function(data, response) {
+        if(!data){
+            callback("No data from database", null);
+        }else{
+            callback(null,data);            
+        }        
+    });
+}
+
+exports.getMentor = function(username, callback){
+    var query = '{"username":"' + username + '"}';    
+    var url = mentorsUrl + apiKeySuffix + '&q=' + encodeURIComponent(query);
+    
+    rest.get(url).on('error', function(data, response) {
+        callback("Some error from mongocloud: " + JSON.stringify(data),null);
+    }).on('success', function(data, response) {
+        if(!data){
+            callback("No data from database", null);
+        }else{
+            callback(null,data);            
+        }        
+    });
+}
+
+
+// exports.addChat = function(menteeId, mentor, message, callback){
+//     var url = chatsUrl + apiKeySuffix;
+//     
+//     var jsonData = JSON.stringify({
+//         menteeId: menteeId,
+//         mentor: mentor,
+//         message: message
+//     });
+//     
+//     rest.post(url, {
+//         data: jsonData
+//     }).on('error', function(data, response) {
+//         callback(data,null);
+//     }).on('success', function(data, response) {
+//         callback(null,data);
+//     });
+// }

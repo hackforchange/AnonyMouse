@@ -72,13 +72,13 @@ var sendSMS = function(from, to, body, callback) {
 
 var login = function(username, password, callback){
     if(!username || !password){
-        
+        callback("Invalid username or password", null);
     }
     else{
-        //TODO:  Verify against db
-        
-    }
-    
+        db.getMentor(username, function(err,data){
+            callback(err,data);
+        });        
+    }    
 }
 
 var restricted = function(req, res, callnext){
@@ -96,22 +96,93 @@ var restricted = function(req, res, callnext){
 app.get('/', function(req, res){
     res.render('index');
 });
+
+app.get('/mentorhome', restricted, function(req, res){    
+    res.render('mentorhome');
+});
 //--------------------------------------
 
 
-//-------------GET API-------------
-app.get('/unanswered', function(req, res){        
+//-------------APPLICATION API-------------
+app.post('/login',  function(req, res){        
+    login(req.body.username, req.body.password, function(err,mentor){
+        if(!err){
+            req.session.regenerate(function(err,ses){
+                req.session.username = req.body.username;
+                req.session.mentor = mentor;
+                req.session.cookie.maxAge = 7200000;
+                res.clearCookie('username');
+                res.cookie('username',req.session.username);
+                res.cookie('sid', req.sessionID);
+                req.session.save(function(err){
+                    if(!err){ 
+                        res.redirect('/mentorhome');
+                    }
+                    else{
+                        console.log("Error writing to session store : "+err);
+                        res.redirect('500.html');
+                    }
+                });
+            });
+        }
+        else{
+            console.log("Bad login attempt!" + req.body);
+            res.redirect('back');
+        }
+    });         
+});
+
+app.get('/logout', function(req, res){
+  //destroy session and redirect home.
+  req.session.destroy(function(){
+    res.redirect('/');
+  });
+});
+
+app.get('/api/unanswered', function(req, res){        
     var response = "";
     db.getUnanswered(function(err,data){
         if(err){
             response = err;
         }
         else{
-            response = data;
+            response = data;            
         }
         res.send(response);
     });       
 });
+
+app.get('/api/mentors/:username', function(req, res){        
+    var response = "";
+    var username = req.params.username;
+    
+    db.getMentor(username,function(err,data){
+        if(err){
+            response = err;
+        }
+        else{
+            response = data;            
+        }
+        res.send(response);
+    });       
+});
+
+// app.post('/chat/:id',  function(req, res){        
+//     var id = req.params.id;
+//     var message = req.body.Body;
+//     var username = req.body.From;
+//     
+//     db.addChat(id, username, message, function(err,data){
+//         if(err){
+//             response = err;
+//         }
+//         else{
+//             response = data;
+//         }
+//         res.send(response);
+//     });       
+// });
+
 //--------------------------------------
 
 //----------------POST API FOR TWILIO TO TALK TO--------------------
@@ -132,23 +203,35 @@ app.post('/newseed', function(req, res){
            
 });
 
-app.post('/mentor/:id/message', function(req, res){
+app.post('/mentor/:username/message', function(req, res){
     //1.  Add to database.
     //2.  If this mentor is online, send.
-    var mentorId = req.params.id;
+    var username = req.params.username;
     var message = req.body.Body;
     var menteeNumber = req.body.From;
-    
-    //var reply = "Hey mentor " + mentorId + ", I got a text from: " + menteeNumber + " saying: " + message;
-    var reply = {
-        "mentorId" : mentorId,
-        "menteeNumber" : menteeNumber,
-        "message": message
-    };
+            
+    db.getMentor(username, function(err,mentor){
+        if(err) { console.error("TWILIO IS ATTEMPTING TO POST TO NONEXISTING MENTORS")}
         
-    everyone.now.sendMessage(mentorId, reply, function(){
-        res.send("Reply sent: " + reply);
-    });
+        else{
+            db.getMentee(menteeNumber, function(err,mentee){
+                if(err) { console.error("Mentor " + username + " got a message from an unknown mentee")}
+                else{
+                    //add chat to db for persistant logging
+                    //then if the mentor is online send it to them
+
+                    var reply = {
+                        "seed" : mentee.seed,
+                        "message": message
+                    };
+                    everyone.now.sendMessage(mentor, reply, function(){
+                        res.send("Mentee texting a mentor; sent: " + reply);
+                    });            
+                }
+            });              
+        }
+    });    
+    
 });
 
 //--------------------------------------
@@ -157,32 +240,61 @@ app.post('/mentor/:id/message', function(req, res){
 
 //----------------NOWJS------------------
 var everyone = nowjs.initialize(app);
+everyone.connected(function(){    
+    this.user.sessionId = "";
+});
+
+everyone.now.setSid = function(sid){
+    if(sid){
+        this.user.sessionId = sid;
+    }
+}
 
 //sid = Mentor to send it to
-everyone.now.sendMessage = function(sid, message, callback){
-     console.log("Sending to mentor: " + JSON.stringify(message));
-     this.now.incomingMessage(message);
+everyone.now.sendMessage = function(mentor, message, callback){         
+     if(this.user.sid){
+         sessionStore.get(this.user.sid, function(err,session){
+             if(session.username == mentor.username){
+                 console.log("Sending to mentor: " + JSON.stringify(message));
+                 this.now.incomingMessage(message);
+             }
+         });
+     }
+     else{
+         this.now.incomingError("Invalid sid, please set sid");
+     }        
 }
 
 //called by client to send a txt to a particular mentee
-everyone.now.sendSMS = function(sid, menteeId, smsbody){
-    //TODO: Get mentor object from sid, pull from session store.
-    //var fromNumber= mentor.phoneNumber
-    //var toNumber = database.getConvo(menteeId).phoneNumber
-    var fromNumber = aaronNumber;
-    var toNumber = menteeId;
-    var self = this;    
-    
-    sendSMS(fromNumber, toNumber, smsbody, function(err,data){
-        console.log(smsbody + " -> " + menteeId);
-        
-        var yourOwnMessage = {
-            "menteeNumber" : menteeId,
-            "message": smsbody
-        };        
-        self.now.incomingMessage(yourOwnMessage);  //TODO: change this, or get rid of it and let clientside handle its own messages
-        
-    });
+everyone.now.sendSMS = function(menteePhone, smsbody){
+    var self = this;  
+    if(this.user.sid){
+         sessionStore.get(this.user.sid, function(err,session){
+                         
+             db.getMentee(menteePhone, function(err,mentee){
+                 if(err){ console.log ("Attempting to txt a nonexistant mentee: " + menteePhone)}
+                 else{
+                     var mentor = session.mentor;
+                     var fromNumber = mentor.phone;
+                     var toNumber = mentee.phone;
+                     
+                     sendSMS(fromNumber, toNumber, smsbody, function(err,data){
+                         console.log(smsbody + " -> " + menteeId);        
+                         var yourOwnMessage = {
+                             "menteeNumber" : menteeId,
+                             "message": smsbody
+                         };        
+
+                         self.now.incomingMessage(yourOwnMessage);
+                     });
+                     
+                 }
+             });             
+         });
+     }
+     else{
+         this.now.incomingError("Invalid sid, please set sid");
+     }     
 }
 
 
