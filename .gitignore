@@ -1,1 +1,8 @@
 node_modules
+.dropbox
+eliza
+scrap
+.DS_Store
+.VolumeIcon.icns
+.fseventsd
+Icon

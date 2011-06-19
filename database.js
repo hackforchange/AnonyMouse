@@ -54,6 +54,21 @@ exports.getMentee = function(phone, callback){
         if(!data){
             callback("No data from database", null);
         }else{
+            callback(null,data[0]);            
+        }        
+    });
+}
+
+exports.getMenteeById = function(id, callback){
+    //var query = '{"id":"' + id + '"}';    
+    var url = menteesUrl + '/'+ id + '/' +apiKeySuffix ;
+    
+    rest.get(url).on('error', function(data, response) {
+        callback("Some error from mongocloud: " + JSON.stringify(data),null);
+    }).on('success', function(data, response) {
+        if(!data){
+            callback("No data from database", null);
+        }else{
             callback(null,data);            
         }        
     });
@@ -69,26 +84,30 @@ exports.getMentor = function(username, callback){
         if(!data){
             callback("No data from database", null);
         }else{
-            callback(null,data);            
+            callback(null,data[0]);
         }        
     });
 }
 
-
 // exports.addChat = function(menteeId, mentor, message, callback){
-//     var url = chatsUrl + apiKeySuffix;
-//     
-//     var jsonData = JSON.stringify({
-//         menteeId: menteeId,
-//         mentor: mentor,
-//         message: message
-//     });
-//     
-//     rest.post(url, {
-//         data: jsonData
-//     }).on('error', function(data, response) {
-//         callback(data,null);
-//     }).on('success', function(data, response) {
-//         callback(null,data);
-//     });
+//     exports.getMenteeById(menteeId, function(err,mentee){
+//         if(!err){
+//             console.log(mentee);
+//             var menteeObj = JSON.parse(mentee);
+//             var chat = {"user":mentor.name, "message":message};
+//             
+//             menteeObj.chats.append(chat);
+//             
+//             var jsonData = JSON.stringify(menteeObj);
+// 
+//             rest.put(url, {
+//                 data: jsonData
+//             }).on('error', function(data, response) {
+//                 callback(data,null);
+//             }).on('success', function(data, response) {
+//                 callback(null,data);
+//             });
+//             
+//         }
+//     });        
 // }

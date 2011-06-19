@@ -3,7 +3,7 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = true;  //for dev
+var CURLONLY = false;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -43,6 +43,11 @@ app.configure(function(){
     //for any static files (like css and stuff)
     app.use(express.static(__dirname + '/public'));
     
+    //Templating!
+    app.set("view engine", "html");
+    app.set("view options", {layout: false});
+    app.register(".html", require('ejs'));
+    
     //Cookies and sessions.  Mmm, cookies.
     app.use(express.cookieParser());
     app.use(express.session({ store: sessionStore, secret: "anonymouuuuuuuse" }));        
@@ -75,9 +80,17 @@ var login = function(username, password, callback){
         callback("Invalid username or password", null);
     }
     else{
-        db.getMentor(username, function(err,data){
-            callback(err,data);
-        });        
+        db.getMentor(username, function(err,mentor){
+            if(!err){
+                if(mentor.password != password){
+                    callback("Invalid password: " + mentor.password + " vs given " + password, null);
+                }else{
+                    callback(null,mentor)
+                }    
+            }else{
+                callback(err,null);
+            }            
+        });
     }    
 }
 
@@ -94,11 +107,29 @@ var restricted = function(req, res, callnext){
 
 //-------------PAGE ROUTES-------------
 app.get('/', function(req, res){
-    res.render('index');
+    var localVars = {name:"none"};
+    if(req.session.mentor){
+        localVars = 
+        { 
+            name: req.session.mentor.name,
+            username: req.session.mentor.username
+        };
+    }
+    
+    res.render('index', {       
+        locals:localVars
+    });    
 });
 
-app.get('/mentorhome', restricted, function(req, res){    
-    res.render('mentorhome');
+app.get('/chat', restricted, function(req, res){    
+    var localVars = 
+    { 
+        name: req.session.mentor.name,
+        username: req.session.mentor.username
+    };
+    res.render('chat', {       
+        locals:localVars
+    });
 });
 //--------------------------------------
 
@@ -116,7 +147,7 @@ app.post('/login',  function(req, res){
                 res.cookie('sid', req.sessionID);
                 req.session.save(function(err){
                     if(!err){ 
-                        res.redirect('/mentorhome');
+                        res.redirect('/chat');
                     }
                     else{
                         console.log("Error writing to session store : "+err);
@@ -126,7 +157,7 @@ app.post('/login',  function(req, res){
             });
         }
         else{
-            console.log("Bad login attempt!" + req.body);
+            console.log("Bad login attempt!" + JSON.stringify(req.body) + " error was " + err);
             res.redirect('back');
         }
     });         
@@ -167,21 +198,40 @@ app.get('/api/mentors/:username', function(req, res){
     });       
 });
 
-// app.post('/chat/:id',  function(req, res){        
-//     var id = req.params.id;
-//     var message = req.body.Body;
-//     var username = req.body.From;
-//     
-//     db.addChat(id, username, message, function(err,data){
-//         if(err){
-//             response = err;
-//         }
-//         else{
-//             response = data;
-//         }
-//         res.send(response);
-//     });       
-// });
+app.get('/api/mentees/:id', function(req, res){        
+    var response = "";
+    var id = req.params.id;
+    
+    db.getMenteeById(id,function(err,data){
+        if(err){
+            response = err;
+        }
+        else{
+            response = data;            
+        }
+        res.send(response);
+    });       
+});
+
+app.post('/api/chat/:id',  function(req, res){        
+    var id = req.params.id;
+    var message = req.body.Body;
+    var username = req.session.mentor || req.body.username;    
+    
+    if(username){
+        db.addChat(id, username, message, function(err,data){
+            if(err){
+                response = err;
+            }
+            else{
+                response = data;
+            }
+            res.send(response);
+        });
+    }else{
+        res.send("Need to be logged in to use this API");
+    }     
+});
 
 //--------------------------------------
 
@@ -230,7 +280,7 @@ app.post('/mentor/:username/message', function(req, res){
                 }
             });              
         }
-    });    
+    });
     
 });
 
@@ -241,12 +291,13 @@ app.post('/mentor/:username/message', function(req, res){
 //----------------NOWJS------------------
 var everyone = nowjs.initialize(app);
 everyone.connected(function(){    
-    this.user.sessionId = "";
+    this.user.sid = "";
 });
 
 everyone.now.setSid = function(sid){
     if(sid){
-        this.user.sessionId = sid;
+        this.user.sid = sid;
+        console.log("Set a sid " + sid);
     }
 }
 
@@ -266,13 +317,13 @@ everyone.now.sendMessage = function(mentor, message, callback){
 }
 
 //called by client to send a txt to a particular mentee
-everyone.now.sendSMS = function(menteePhone, smsbody){
+everyone.now.sendSMS = function(menteeId, smsbody){
     var self = this;  
     if(this.user.sid){
          sessionStore.get(this.user.sid, function(err,session){
                          
-             db.getMentee(menteePhone, function(err,mentee){
-                 if(err){ console.log ("Attempting to txt a nonexistant mentee: " + menteePhone)}
+             db.getMenteeById(menteeId, function(err,mentee){
+                 if(err){ console.log (err)}
                  else{
                      var mentor = session.mentor;
                      var fromNumber = mentor.phone;
@@ -282,7 +333,8 @@ everyone.now.sendSMS = function(menteePhone, smsbody){
                          console.log(smsbody + " -> " + menteeId);        
                          var yourOwnMessage = {
                              "menteeNumber" : menteeId,
-                             "message": smsbody
+                             "message": smsbody,
+                             "name": mentor.name 
                          };        
 
                          self.now.incomingMessage(yourOwnMessage);

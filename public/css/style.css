@@ -1,0 +1,241 @@
+/* Reset CSS
+----------------------------------------------------------------------------------------------------*/
+/*
+** http://meyerweb.com/eric/tools/css/reset/ 
+** v2.0 | 20110126
+** License: none (public domain)
+*/ 
+
+* { margin:0; }
+
+html, body, div, span, applet, object, iframe, 
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+	}
+/* 
+body {
+	line-height: 1;
+	}
+
+ol, ul {
+	list-style: none;
+	}
+*/
+blockquote, q {
+	quotes: none;
+	}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+	}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	}
+
+
+
+/* Structural 
+----------------------------------------------------------------------------------------------------*/
+/* 
+** HTML5 elements: header, nav, section, article, aside, footer - be sure to include display: block; for browser compatibility
+*/
+
+html, body { height:100%; }
+
+body 	{
+	display:block;
+	width:100%;
+	font-family: font-family: Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important;
+	background:#ccc;
+	}
+
+header { 
+	display: block; 
+	margin:0 auto; 
+	padding: 20px 20px 5px 20px;
+	background: #693 url(../imgs/favicon.gif) no-repeat 10px;
+	min-height: 40px;
+	color:#fff;
+	width:960px;
+	}
+	
+	body#front header {min-height:140px;background: #693 url(../imgs/logo.gif) no-repeat 20px 10px;}
+	
+	
+.hedBar {background: #693; width:100%; margin-top: -5px;} /* negative margin kludge */
+
+#container {
+	height:auto !important;
+	height: 100%;
+	width: 100%;
+	margin: 0 auto; 
+	padding:0; 
+	position: relative;
+	background: #fff;
+	} 
+	
+nav {	
+	display: block;
+	margin: 0 auto;
+	text-transform: capitalize; 
+	font-size:12px;
+	background: #241;
+	width: 960px
+	}	
+
+.navBar {background:#241; display:inline-block; width:100%; height:40px;}
+
+.subTop {background-color:#241; color:#fff; padding:0; width:100%; float:left;}
+
+.mainContent {margin: 0 auto; width: 960px;}
+	
+#main-wrapper { margin-left: auto; margin-right: auto; width: 100%; background-color:#fff; }	
+	
+section {display: block;}
+article {display: block;}
+aside {display: block;}
+
+
+footer { margin:0 auto; width:960px; }
+	footer p.right {margin:10px 20px;}
+.push { height: 1px; }
+
+
+/* Elemental and Display 
+----------------------------------------------------------------------------------------------------*/
+
+h1, h2, h3, h4, h5, h6, p, .serif 	{ font-family: Gibson-Light, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important; } 
+	h1, h2, h3, h4, h5, h6 {line-height:150%;}
+	h1	{font-size:2em;}
+	h2	{font-size:1.25em;}
+	h3	{font-size:1.15em;}
+	h4	{font-size:1.10em;}
+	h5	{font-size:1.0em;}
+	h6	{font-size:0.8em;}
+	
+	body#front header h1 {margin: 0 25%;}
+	body header h1 {margin: 0 20px;}
+	
+p, nav, .sans, ul, .tagline { font-family: Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important; }
+	p, nav, ul, .tagline	{font-size: 0.85em; line-height:1.5em;}
+	
+.right {text-align:right;}	
+.serif {font-family:CentSbkDT-Regular, "Century Schoolbook", CenturySchoolbookDT, Georgia, Times, serif; !important;}
+
+a {
+	color:#39c;
+	line-height:150%;
+	text-decoration:none;	
+	cursor: pointer;
+	font-weight:normal;
+	}
+	
+	a:link {color:#39c;}	
+	a:visited {color:#369;}
+	a:active {color:#036;}
+	a:hover {color:#036;}
+	
+img {border:0;}
+
+ol, ul {margin-left:1em; padding-left:0;list-style: disc;}
+	.rtBar ul {font-size:0.75em;}
+
+.mainCopy {margin: 10px 20px 10px 0; color: #264567; width:920px;}
+	.mainCopy p {font-size:16px; font-family:  Gibson-Light, Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; font-weight:normal; line-height:150%; margin: 0 0 10px 0;}	
+	.mainCopy ul {margin: 0 40px;}
+.subCopy {margin: 0 10px;}
+
+.loginTop {float:right; margin-right:20px;}
+	#login {padding:2px; margin:9px 0; height:12px; font-size:10px; color:#333; float:left;}
+	#password {padding:2px; margin:9px 0 9px 5px; height:12px; font-size:10px; color:#333; float:left;}
+	#loginButton {display:block; background-image: url(../imgs/login_btn.gif); width: 68px; height: 25px; background-position:left top; float:left; margin:8px 10px; outline:none; border:0;}
+	#loginButton:hover, #loginButton:active, #loginButton:focus  {background-position: right;} 
+
+
+.seedBox {margin: 0 25%;}
+	#seed {padding:2px; margin:5px 0; height:30px; font-size:14px; color:#333; float:left;}
+	#seedButton {display:block; background-image: url(../imgs/ask_btn.gif); width: 68px; height: 35px; background-position:left top; float:left; margin:8px 10px;}
+	#seedButton {outline:none;display:block;}
+	#seedButton:hover, #seedButton:active, #seedButton:focus  {background-position: right;} 
+	
+#chatBox {padding:2px; margin:5px 0; height:14px; font-size:14px; color:#333; }	
+
+/* clunky way to remove chrome outline of input buttons 
+#loginButton:active, #seedButton:active {outline: none;}
+#loginButton:focus, #seedButton:focus {-moz-outline-style: none;}
+input#loginButton, input#seedButton {outline-color: invert;outline-style: none;outline-width: medium;}
+*/
+
+
+
+/* Colors 
+----------------------------------------------------------------------------------------------------*/
+.green {color: #693;} /* head */
+.dkGreen {color:#241;} /* nav */
+.ltGreen {color:#9c6;}
+
+.blue {color: #369;}
+.ltBlue {color:#39c;}
+.dkBlue {color:#036;}
+
+.gray {color:cba;}
+.ltGray {color:#efefef;}
+.dkGray {color:#666;}
+.white {color:#fff;}
+
+.brown {color:#630;}
+.beige {color:#c91;}
+.dkBrown {color:#321;}
+
+
+/* Webfonts 
+----------------------------------------------------------------------------------------------------*/
+.CentSbkDT-Regular { font-family: CentSbkDT-Regular; }
+.Gibson-Light { font-family: Gibson-Light; }
+.Gibson-LightIt { font-family: Gibson-LightIt; }
+.Gibson-BoldItalic { font-family: Gibson-BoldItalic; }
+.Gibson-SemiboldIt { font-family: Gibson-SemiboldIt; }
+.Gibson-Bold { font-family: Gibson-Bold; }
+.Gibson-Regular { font-family: Gibson-Regular; }
+.Gibson-SemiBold { font-family: Gibson-SemiBold; }
+.Gibson-Italic { font-family: Gibson-Italic; }
+
+
+/* More Grid Fun 
+----------------------------------------------------------------------------------------------------*/
+/* chat page 2-col wide single grid */
+body#chat .container_12 .grid_8 {width:600px; margin-left:20px;}
+
+/* 4-col grid */
+.container_12 .grid_3	{border-right:1px #9c6 solid; min-height:100px; width:204px; padding: 5px 10px 20px 10px; margin-right:0;}
+	.container_12 .grid_3.last {border:0;}
+	.container_12 .grid_3.first { margin:0; padding-left:20px; }
+
+/* 3-col grid */
+.container_12 .grid_4	{border-right:1px #9c6 solid; border-top:1px #9c6 solid; min-height:100px; width:299px; padding: 10px; margin:20px 0; }
+	.container_12 .grid_4.last {border: 0; border-top:1px #9c6 solid; }
+	.container_12 .grid_4.leftCol {border:0; width:289px; margin:5px 0;}
+
