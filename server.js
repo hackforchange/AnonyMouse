@@ -8,24 +8,20 @@ var PORT = process.env.PORT || 3000;
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
 var AUTH_TOKEN = '8894ebecf19122c98344b232291dc0bd';
 var MY_HOSTNAME = 'anonymouse.herokuapp.com';
+var sandboxNum = '+14155992671';
+var masterNum = '+14158774471';
 
 //----------------------------------------
 
 //-------------REQUIRED STUFF-------------
 var express = require('express');
 var app = express.createServer();
+var sys = require('sys'),
+    rest = require('restler');
 
 MemoryStore = require('connect').session.MemoryStore;
 var sessionStore = new MemoryStore(); //TODO:  Use something more robust instead of memory JEEEEZUS
 
-
-var sys = require('sys'),
-    TwilioClient = require('twilio').Client,
-    client = new TwilioClient(ACCOUNT_SID, AUTH_TOKEN, MY_HOSTNAME),
-    newSeedPhone = client.getPhoneNumber('+14158774471');
-    //sandboxPhone = client.getPhoneNumber('+14155992671');
-    //sandbox: 14155992671
-    //real number: 14158774471
 //----------------------------------------
 
 
@@ -46,42 +42,54 @@ app.configure(function(){
     app.use(express.session({ store: sessionStore, secret: "anonymouuuuuuuse" }));        
 });
 
+
+var sendSMS = function(from, to, body, callback) {
+    var accountSid = ACCOUNT_SID,
+        authToken = AUTH_TOKEN,
+        apiVersion = '2010-04-01',
+        uri = '/'+apiVersion+'/Accounts/'+accountSid+'/SMS/Messages',
+        host = 'api.twilio.com',
+        fullURL = 'https://'+accountSid+':'+authToken+'@'+host+uri;
+ 
+    rest.post(fullURL, {
+        data: { From:from, To:to, Body:body }
+    }).on('error', function(data, response) {
+        callback(data,null);
+    }).on('complete', function(data, response) {
+        callback(null,data);
+    });  
+}
+
 //-------------PAGE ROUTES-------------
 app.get('/', function(req, res){
     res.render('index');
 });
 //--------------------------------------
 
+app.get('/test', function(req, res){        
+    sendSMS(masterNum, sandboxNum, "Hi, I'm the anonymouse server and I'm alive!", function(err,data){
+       if(err){
+           console.log(err);
+       }else{
+           console.log("TEST SUCCESSFUL"); 
+           res.send("Test successful.");
+       }       
+    });    
+});
 
 //-------------API----------------------
 
 app.post('/newseed', function(req, res){    
-    //
+    var message = req.body.Body;
+    var menteeNumber = req.body.From;
+    
+    sendSMS(masterNum, menteeNumber, "Thanks for that!", function(err,data){
+       console.log("SENT A TEXT TO:" + from); 
+    });    
 });
 
 //--------------------------------------
 
-
-newSeedPhone.setup(function() {
-    
-    newSeedPhone.on('incomingSms', function(reqParams, res) {
-
-        // reqParams contains the Twilio request parameters.
-        // Res is a Twiml.Response object.
-
-        console.log('Received incoming SMS with text: ' + reqParams.Body);
-        console.log('From: ' + reqParams.From);
-        
-        newSeedPhone.sendSMS(reqParams.From, "Thanks for saying " + reqParams.Body, function(sms){
-            console.log("Responded! Waiting for process...");
-            sms.on('processed', function(){
-                console.log("Processed!");
-            });
-            
-        });
-    });
-    
-});
 
 
 //Go baby go!

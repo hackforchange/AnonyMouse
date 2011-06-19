@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "2.3.11",
-    "twilio": "0.4.0",
+    "restler": "0.2.1",
     "connect": "1.4.5"
   }
 }
