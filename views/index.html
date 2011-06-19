@@ -182,19 +182,19 @@ Date: 		June 18-19, 2011
 
 <body id="front" class="main">
 <section id="container" class="container_12">
-    <div class="navBar">
+	<div class="navBar">
         <nav>
-        	<div class="loginTop">            	
+        	<div class="loginTop">
                 <% if(name != "none"){%>
-                  Logged in as <%= name %>
-                  | <a href="/logout" title="Logout">Logout</a>   
-                <% }else{ %>            
-                    <form method="POST" action="/login">
-                        <input id="login" tabindex="1" type="text" maxlength="200" name="username" autocomplete="off" size="20" title="login" value="aaron" placeholder="Login" />
-                        <input id="password" tabindex="2" type="password" maxlength="200" name="password" autocomplete="off" size="20" title="password" value="password" placeholder="Password" />
-                        <input id="loginButton" tabindex="3" type="image" src="imgs/spacer.gif" class="" alt=" " name="send" value="" />
+                  <p class="loggedIn">Logged in as: <a href="/chat" title="Chat"><span class="loggedName"><%= name %></span></a>
+                  | <a href="/logout" title="Logout" class="logOut">Logout</a></p>   
+                <% }else{ %>  
+            	<form method="POST" action="/login">
+                    <input id="login" tabindex="1" type="text" maxlength="200" name="username" autocomplete="off" size="20" title="login" value="aaron" placeholder="Login" />
+                    <input id="password" tabindex="2" type="password" maxlength="200" name="password" autocomplete="off" size="20" title="password" value="password" placeholder="Password" />
+                    <input id="loginButton" tabindex="3" type="image" src="imgs/spacer.gif" class="" alt=" " name="send" value="" />
                     </form>
-                <% } %>
+ <% } %>
             </div>
         </nav>
     </div>
@@ -209,39 +209,67 @@ Date: 		June 18-19, 2011
         </header>
     </div>
 	<section class="mainContent">
-      <div class="grid_12 mainCopy">
-          <h1>Home: Home</h1>
-            <p><span class="Gibson-SemiBold">Homey:</span> Homey page.</p>
-            
-            <p>Sample Questions, Mentor profile pics</p>
+      <div class="grid_12 mainCopy sampleQuestions">
+          <h1>Questions? Find answers.</h1>
+            <ol>
+            	<li>I'm on a sports team in college but no one here's out. I know it'll jeopardize my status on the team as "the guy", but I dont know how much longer I can keep my secret. What should I do?</li>
+                <li>I'm really religious and believe in God and feel He has a plan for all of us. However, I struggle with the fact that I am attracted to guys. How do I reconcile my beliefs with my feelings for other guys?</li>
+                <li>I've had a girlfriend for some time now. I am attracted to guys...am I bi? I care a lot about my girlfriend but I need to take care about myself. What should I do?</li>
+            </ol>
             
       </div>
-		
-
       <div class="clearfix"></div>    
-    
-    	<!-- 3col -->
-		<div class="grid_4 first dkGray">
+      <!-- 3col -->
+	      <div class="grid_4 first dkGray">
         	<div class="subCopy">
-                <img src="#" class="img_3" alt="AnonyMouse" />
-                <h2>Hed sub</h2>
-                <p>Copy: col-3 boxes.</p>
+                <h2>Mentor One</h2>
+                <p><img src="imgs/mentor01.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="mentor01.html">More &gt;</a></p>
            </div>
         </div>
 		<div class="grid_4 dkGray">
         	<div class="subCopy">
-                <img src="#" class="img_3" alt="AnonyMouse" />
-                <h2>Hed sub</h2>
-                <p>Copy: col-3 boxes.</p>
+                <h2>Mentor Two</h2>
+                <p><img src="imgs/mentor02.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="mentor01.html">More &gt;</a></p>
            </div>
         </div>
 		<div class="grid_4 last dkGray">
         	<div class="subCopy">
-                <img src="#" class="img_3" alt="AnonyMouse" />
-                <h2>Hed sub</h2>
-                <p>Copy: col-3 boxes.</p>
+                <h2>Mentor Three</h2>
+                <p><img src="imgs/mentor03.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="mentor01.html">More &gt;</a></p>
            </div>
         </div>
+        <div class="grid_4 first dkGray">
+        	<div class="subCopy">
+                <h2>Mentor Four</h2>
+                <p><img src="imgs/mentor04.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="mentor01.html">More &gt;</a></p>
+           </div>
+        </div>
+		<div class="grid_4 dkGray">
+        	<div class="subCopy">
+                <h2>Mentor Five</h2>
+                <p><img src="imgs/mentor05.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="mentor01.html">More &gt;</a></p>
+           </div>
+        </div>
+		<div class="grid_4 last dkGray">
+        	<div class="subCopy">
+                <h2>Mentor Six</h2>
+                <p><img src="imgs/mentor06.jpg" width="200" height="135" alt="mentor" /></p>
+                <p>Descriptive text.</p>
+                <p class="right"><a href="	mentor01.html">More &gt;</a></p>
+           </div>
+        </div>
+        <div class="clearfix"></div>   
+    	
     </section>  
 
         <div class="clearfix"></div>

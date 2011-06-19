@@ -3,7 +3,7 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = true;  //for dev
+var CURLONLY = false;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -213,25 +213,25 @@ app.get('/api/mentees/:id', function(req, res){
     });       
 });
 
-app.post('/api/chat/:id',  function(req, res){        
-    var id = req.params.id;
-    var message = req.body.Body;
-    var username = req.session.mentor || req.body.username;    
-    
-    if(username){
-        db.addChat(id, username, message, function(err,data){
-            if(err){
-                response = err;
-            }
-            else{
-                response = data;
-            }
-            res.send(response);
-        });
-    }else{
-        res.send("Need to be logged in to use this API");
-    }     
-});
+// app.post('/api/chat/:id',  function(req, res){        
+//     var id = req.params.id;
+//     var message = req.body.Body;
+//     var username = req.session.mentor || req.body.username;    
+//     
+//     if(username){
+//         db.addChat(id, username, message, function(err,data){
+//             if(err){
+//                 response = err;
+//             }
+//             else{
+//                 response = data;
+//             }
+//             res.send(response);
+//         });
+//     }else{
+//         res.send("Need to be logged in to use this API");
+//     }     
+// });
 
 //--------------------------------------
 
@@ -246,7 +246,8 @@ app.post('/newseed', function(req, res){
         if(err){console.log(err)}
         else{
             sendSMS(masterNumber, menteeNumber, reply, function(err,data){
-               console.log("WELCOME: " + menteeNumber); 
+               console.log("WELCOME: " + menteeNumber);
+               res.send(reply);
             });
         }        
     });
@@ -327,7 +328,13 @@ everyone.now.sendSMS = function(menteeId, smsbody){
     var self = this;  
     if(this.user.sid){
          sessionStore.get(this.user.sid, function(err,session){
-                         
+             
+             var yourOwnMessage = {
+                  "menteeId" : menteeId,
+                  "message": smsbody,
+                  "name": session.mentor.name 
+             };
+                          
              db.getMenteeById(menteeId, function(err,mentee){
                  if(err){ console.log (err)}
                  else{
@@ -337,17 +344,14 @@ everyone.now.sendSMS = function(menteeId, smsbody){
                      
                      sendSMS(fromNumber, toNumber, smsbody, function(err,data){
                          console.log(smsbody + " -> " + menteeId);        
-                         var yourOwnMessage = {
-                             "menteeId" : menteeId,
-                             "message": smsbody,
-                             "name": mentor.name 
-                         };        
-
-                         self.now.incomingMessage(yourOwnMessage);
-                     });
-                     
-                 }
-             });             
+                               
+                         //TODO:  If this isn't where we reply back, we need some mechanism for failed SMS-es
+                         //self.now.incomingMessage(yourOwnMessage);
+                     });                     
+                 } //end else
+             });
+             
+             self.now.incomingMessage(yourOwnMessage);             
          });
      }
      else{

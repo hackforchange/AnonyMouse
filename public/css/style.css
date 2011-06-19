@@ -68,7 +68,7 @@ html, body { height:100%; }
 body 	{
 	display:block;
 	width:100%;
-	font-family: font-family: Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important;
+	font-family: font-family: Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; !important;
 	background:#ccc;
 	}
 
@@ -94,7 +94,7 @@ header {
 	margin: 0 auto; 
 	padding:0; 
 	position: relative;
-	background: #fff;
+	background: #efefef;
 	} 
 	
 nav {	
@@ -127,7 +127,7 @@ footer { margin:0 auto; width:960px; }
 /* Elemental and Display 
 ----------------------------------------------------------------------------------------------------*/
 
-h1, h2, h3, h4, h5, h6, p, .serif 	{ font-family: Gibson-Light, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important; } 
+h1, h2, h3, h4, h5, h6, p, .serif 	{ font-family: Gibson-Light, Gibson, Helvetica, Arial, sans-serif; !important; } 
 	h1, h2, h3, h4, h5, h6 {line-height:150%;}
 	h1	{font-size:2em;}
 	h2	{font-size:1.25em;}
@@ -139,7 +139,7 @@ h1, h2, h3, h4, h5, h6, p, .serif 	{ font-family: Gibson-Light, Gibson, Intersta
 	body#front header h1 {margin: 0 25%;}
 	body header h1 {margin: 0 20px;}
 	
-p, nav, .sans, ul, .tagline { font-family: Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; !important; }
+p, nav, .sans, ul, .tagline { font-family: Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; !important; }
 	p, nav, ul, .tagline	{font-size: 0.85em; line-height:1.5em;}
 	
 .right {text-align:right;}	
@@ -158,13 +158,15 @@ a {
 	a:active {color:#036;}
 	a:hover {color:#036;}
 	
+a.logoType {text-decoration:none; color:#fff;}
+
 img {border:0;}
 
 ol, ul {margin-left:1em; padding-left:0;list-style: disc;}
 	.rtBar ul {font-size:0.75em;}
 
 .mainCopy {margin: 10px 20px 10px 0; color: #264567; width:920px;}
-	.mainCopy p {font-size:16px; font-family:  Gibson-Light, Gibson-Regular, Gibson, Interstate, ProximaNova, Helvetica, Arial, sans-serif; font-weight:normal; line-height:150%; margin: 0 0 10px 0;}	
+	.mainCopy p {font-size:16px; font-family:  Gibson-Light, Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; font-weight:normal; line-height:150%; margin: 0 0 10px 0;}	
 	.mainCopy ul {margin: 0 40px;}
 .subCopy {margin: 0 10px;}
 
@@ -181,14 +183,40 @@ ol, ul {margin-left:1em; padding-left:0;list-style: disc;}
 	#seedButton {outline:none;display:block;}
 	#seedButton:hover, #seedButton:active, #seedButton:focus  {background-position: right;} 
 	
-#chatBox {padding:2px; margin:5px 0; height:14px; font-size:14px; color:#333; }	
+#messages {padding:10px 20px; background:#9c6; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px; overflow:auto; height:180px;}
+	
+	#messages .chatMsg {margin:0;}
+	#messages div:nth-child(even) {color:#369;}
+	#messages div:nth-child(odd) {color:#036;}
 
-/* clunky way to remove chrome outline of input buttons 
-#loginButton:active, #seedButton:active {outline: none;}
-#loginButton:focus, #seedButton:focus {-moz-outline-style: none;}
-input#loginButton, input#seedButton {outline-color: invert;outline-style: none;outline-width: medium;}
-*/
+#chatStuff {padding:10px 20px; background:#9c6; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px; margin-top: 10px;}
+	
+	#chatError {padding:10px 20px; background:#cf6; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px; margin-top: 10px;}
+	
+#chatBox {padding:2px; margin:5px 0; height:14px; font-size:14px; color:#333; width:520px; height:40px;}	
 
+#chatUn {padding:10px 20px; background:#fff; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px;}
+	#chatUn div:nth-child(even) {color:#369;}
+	#chatUn div:nth-child(odd) {color:#036;}
+	
+	.chatQs {padding-bottom:20px;}
+
+.sampleQuestions ol {list-style: decimal outside none;margin:0 50px;font-family:  Gibson-Light, Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; font-weight:normal; line-height:150%;}
+	.sampleQuestions ol li {padding-bottom:10px;}
+	
+.loggedIn {margin-top:10px; color:#cba;text-transform:none;}	
+	.loggedName {font-family: Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; padding:0 3px;}
+	.logOut {font-family: Gibson-Regular, Gibson, Helvetica, Arial, sans-serif; padding:0 3px;}
+	
+.activeConvo .new {font-family: Gibson-SemiBold, Gibson-Regular, Gibson, Helvetica, Arial, sans-serif;}
+	.activeConvo .current {background:#9c6; padding:2px 5px;}
+	.activeConvo ul {list-style: none; margin:0;}
+	.activeConvo li {padding-bottom:10px;}
+
+.openQs {border-top:#9c6 solid 1px;margin-top:10px;padding:5px 10px;-moz-border-radius-bottomleft:10px;-moz-border-radius-bottomright:10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; -khtml-border-radius-bottomright: 10px; -khtml-border-radius-bottomleft: 10px; border-bottom-right-radius:10px;border-bottom-left-radius:10px;}
+	.openQs:hover, .openQs:active  {background:#69c;}
+	
+#mentorProfile {padding:10px 20px; background:#fff; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px;}	
 
 
 /* Colors 
@@ -227,7 +255,7 @@ input#loginButton, input#seedButton {outline-color: invert;outline-style: none;o
 /* More Grid Fun 
 ----------------------------------------------------------------------------------------------------*/
 /* chat page 2-col wide single grid */
-body#chat .container_12 .grid_8 {width:600px; margin-left:20px;}
+body#chat .container_12 .grid_8, body#mentorProf .container_12 .grid_8  {width:600px; margin-left:20px;}
 
 /* 4-col grid */
 .container_12 .grid_3	{border-right:1px #9c6 solid; min-height:100px; width:204px; padding: 5px 10px 20px 10px; margin-right:0;}
@@ -235,7 +263,7 @@ body#chat .container_12 .grid_8 {width:600px; margin-left:20px;}
 	.container_12 .grid_3.first { margin:0; padding-left:20px; }
 
 /* 3-col grid */
-.container_12 .grid_4	{border-right:1px #9c6 solid; border-top:1px #9c6 solid; min-height:100px; width:299px; padding: 10px; margin:20px 0; }
+.container_12 .grid_4	{border-right:1px #9c6 solid; border-top:1px #9c6 solid; min-height:100px; width:299px; padding: 10px; margin: 0; }
 	.container_12 .grid_4.last {border: 0; border-top:1px #9c6 solid; }
-	.container_12 .grid_4.leftCol {border:0; width:289px; margin:5px 0;}
+	.container_12 .grid_4.leftCol {border:0; width:280px; margin:10px 0; padding:10px 20px; background:#fff; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius:10px; }
 
