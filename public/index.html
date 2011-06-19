@@ -12,19 +12,43 @@
     <script type="text/javascript" src="/nowjs/now.js"></script>
     <script type="text/javascript" charset="utf-8">
         window.addEvent('load',function(){
-            now.incomingMessage = function(message){
-                var m = new Element( 'div',{id:message+"_", html:message} );
+            
+            $('chatButton').addEvent('click', function(){                
+                now.sendSMS("junksid", $('menteeId').value, $('chatBox').value);
+                $('chatBox').value = "";
+            });
+            
+            $('chatBox').addEvent('keydown', function(event){
+                if (event.key == 'enter'){
+                    $('chatButton').fireEvent('click');
+                }
+            });
+            
+            now.incomingMessage = function(json){
+                
+                console.log(json);
+                var message = json.message;
+                var m = new Element( 'div', {id:message+"_", html:message} );
                 $('messages').grab(m);
+                $('menteeId').value = json.menteeNumber;
             }
+            
+            $('chatBox').focus();
         });        
     </script>
 </head>
 <body>
-Silly SMS log:
+Silly SMS log:<p></p>
 
 <div id="messages">
     
 </div><!-- #messages -->
-
+<div id="chatStuff">
+    Chat:
+    <input class='text' id='chatBox' type='text' /> <p></p>
+    Mentee Phone to reply to:
+    <input class='text' id='menteeId' type='text' />
+    <input class='button' id='chatButton' type='button' value='Send' />
+</div>
 </body>
 </html>

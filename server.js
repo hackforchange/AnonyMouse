@@ -1,9 +1,9 @@
-// AnonyMouse Server 0.0.0.1 (lol!)
+// AnonyMouse Server 0.0.0.0.1 (lol!)
 // By @aashay and @aaronmoy and @ewee
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = false;
+var CURLONLY = false;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -11,6 +11,7 @@ var AUTH_TOKEN = '8894ebecf19122c98344b232291dc0bd';
 var MY_HOSTNAME = 'anonymouse.herokuapp.com';
 var sandboxNum = '+14155992671';
 var masterNum = '+14158774471';
+var aaronNum = '+14158774990'
 
 //----------------------------------------
 
@@ -114,8 +115,13 @@ app.post('/mentor/:id/message', function(req, res){
     var message = req.body.Body;
     var menteeNumber = req.body.From;
     
-    var reply = "Hey mentor " + mentorId + ", I got a text from: " + menteeNumber + " saying: " + message;
-    
+    //var reply = "Hey mentor " + mentorId + ", I got a text from: " + menteeNumber + " saying: " + message;
+    var reply = {
+        "mentorId" : mentorId,
+        "menteeNumber" : menteeNumber,
+        "message": message
+    };
+        
     everyone.now.sendMessage(mentorId, reply, function(){
         res.send("Reply sent: " + reply);
     });
@@ -128,16 +134,32 @@ app.post('/mentor/:id/message', function(req, res){
 //----------------NOWJS------------------
 var everyone = nowjs.initialize(app);
 
-everyone.now.connect = function(sid, convoId){
-    //var previousMessages = //TODO: Get messages from db and post them
-    this.now.incomingMessage("CONNECTED!");
-}
-
-
 //sid = Mentor to send it to
 everyone.now.sendMessage = function(sid, message, callback){
-     console.log("Sending " + message);
+     console.log("Sending to mentor: " + JSON.stringify(message));
      this.now.incomingMessage(message);
+}
+
+//called by client to send a txt to a particular mentee
+everyone.now.sendSMS = function(sid, menteeId, smsbody){
+    //TODO: Get mentor object from sid, pull from session store.
+    //var fromNumber= mentor.phoneNumber
+    //var toNumber = database.getConvo(menteeId).phoneNumber
+    var fromNumber = aaronNum;
+    var toNumber = menteeId;
+    var self = this;
+    
+    
+    sendSMS(fromNumber, toNumber, smsbody, function(err,data){
+        console.log(smsbody + " -> " + menteeId);
+        
+        var yourOwnMessage = {
+            "menteeNumber" : menteeId,
+            "message": smsbody
+        };        
+        self.now.incomingMessage(yourOwnMessage);  //TODO: change this, or get rid of it and let clientside handle its own messages
+        
+    });
 }
 
 
