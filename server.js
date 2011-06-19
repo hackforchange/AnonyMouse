@@ -3,6 +3,7 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
+var CURLONLY = false;
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -50,14 +51,19 @@ var sendSMS = function(from, to, body, callback) {
         uri = '/'+apiVersion+'/Accounts/'+accountSid+'/SMS/Messages',
         host = 'api.twilio.com',
         fullURL = 'https://'+accountSid+':'+authToken+'@'+host+uri;
- 
-    rest.post(fullURL, {
-        data: { From:from, To:to, Body:body }
-    }).on('error', function(data, response) {
-        callback(data,null);
-    }).on('complete', function(data, response) {
-        callback(null,data);
-    });  
+    if(!CURLONLY){
+        rest.post(fullURL, {
+            data: { From:from, To:to, Body:body }
+        }).on('error', function(data, response) {
+            callback(data,null);
+        }).on('complete', function(data, response) {
+            callback(null,data);
+        });
+    }
+    else{
+        callback(null,"DEV TEST SUCCESSFUL");
+    }
+      
 }
 
 //-------------PAGE ROUTES-------------
@@ -83,8 +89,10 @@ app.post('/newseed', function(req, res){
     var message = req.body.Body;
     var menteeNumber = req.body.From;
     
-    sendSMS(masterNum, menteeNumber, "Thanks for that!", function(err,data){
-       console.log("SENT A TEXT TO:" + menteeNumber); 
+    var reply = "Oh really? Tell me more about " + message;    
+    
+    sendSMS(masterNum, menteeNumber, reply, function(err,data){
+       console.log("SENT A REPLY TO: " + menteeNumber + " - " + reply); 
     });    
 });
 
