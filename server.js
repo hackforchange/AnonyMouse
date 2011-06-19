@@ -274,6 +274,7 @@ app.post('/mentor/:username/message', function(req, res){
                         "seed" : mentee.seed,
                         "message": message
                     };
+                    
                     everyone.now.sendMessage(mentor, reply, function(){
                         res.send("Mentee texting a mentor; sent: " + reply);
                     });            
@@ -301,8 +302,13 @@ everyone.now.setSid = function(sid){
     }
 }
 
-//sid = Mentor to send it to
+//Inbound message from Twilio, need to send it to the right mentor.
 everyone.now.sendMessage = function(mentor, message, callback){         
+     var self = this;
+     if(!this.now){
+         console.log("Error, there is no this.now");
+     }
+     
      if(this.user.sid){
          sessionStore.get(this.user.sid, function(err,session){
              if(session.username == mentor.username){
@@ -312,7 +318,9 @@ everyone.now.sendMessage = function(mentor, message, callback){
          });
      }
      else{
+         console.log("Twilio tried to sendMessage but failed: " + mentor + " - " message);
          this.now.incomingError("Invalid sid, please set sid");
+         callback("error",null);
      }        
 }
 
