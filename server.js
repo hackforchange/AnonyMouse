@@ -84,7 +84,7 @@ app.post('/newseed', function(req, res){
     var menteeNumber = req.body.From;
     
     sendSMS(masterNum, menteeNumber, "Thanks for that!", function(err,data){
-       console.log("SENT A TEXT TO:" + from); 
+       console.log("SENT A TEXT TO:" + menteeNumber); 
     });    
 });
 
