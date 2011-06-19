@@ -275,8 +275,11 @@ app.post('/mentor/:username/message', function(req, res){
                         "message": message
                     };
                     
-                    everyone.now.sendMessage(mentor, reply, function(){
-                        res.send("Mentee texting a mentor; sent: " + reply);
+                    everyone.now.sendMessage(mentor, reply, function(err,msg){
+                        if(err){res.send("ERROR:" + err)}
+                        else{
+                            res.send("Mentee texting a mentor; sent: " + reply);
+                        }                        
                     });            
                 }
             });              
@@ -307,6 +310,7 @@ everyone.now.sendMessage = function(mentor, message, callback){
      var self = this;
      if(!this.now){
          console.log("Error, there is no this.now");
+         callback("No Now!", null);
      }
      
      if(this.user.sid){
@@ -314,12 +318,16 @@ everyone.now.sendMessage = function(mentor, message, callback){
              if(session.username == mentor.username){
                  console.log("Sending to mentor: " + JSON.stringify(message));
                  self.now.incomingMessage(message);
+                 callback(null,message);
              }
          });
      }
      else{
-         console.log("Twilio tried to sendMessage but failed: " + mentor + " - " + message);
-         this.now.incomingError("Invalid sid, please set sid");
+         console.log("Twilio thinks now is " + self);
+         
+         
+         console.log("Twilio tried to sendMessage but failed: " + JSON.stringify(mentor) + " - " + JSON.stringify(message));
+         self.now.incomingError("Invalid sid, please set sid");
          callback("error",null);
      }        
 }

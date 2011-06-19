@@ -28,8 +28,8 @@ window.addEvent('load',function(){
         
     }
     
-    now.incomingError = function(json){
-        console.error("Server error: " + json);
+    now.incomingError = function(msg){
+        console.error("Server error: " + msg);
     }
     
     $('chatBox').focus();
