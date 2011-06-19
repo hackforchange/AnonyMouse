@@ -269,14 +269,15 @@ app.post('/mentor/:username/message', function(req, res){
                 else{
                     //add chat to db for persistant logging
                     //then if the mentor is online send it to them
-
+                    console.log(JSON.stringify(mentee));
                     var reply = {
                         "seed" : mentee.seed,
-                        "message": message
+                        "message": message,
+                        "menteeId": mentee._id.$oid 
                     };
                     
                     everyone.now.sendMessage(mentor, reply); 
-                    
+
                     var response = "Mentee texting a mentor; sent: " + JSON.stringify(reply);
                     res.send(response);
                 }
@@ -306,7 +307,6 @@ everyone.now.setSid = function(sid){
 //Inbound message from Twilio, need to send it to the right mentor.
 everyone.now.sendMessage = function(mentor, message, callback){         
      var self = this;     
-     
      if(this.user.sid){
          sessionStore.get(this.user.sid, function(err,session){
              if(session.username == mentor.username){
@@ -318,6 +318,7 @@ everyone.now.sendMessage = function(mentor, message, callback){
      }
      else{
          //callback(null,null);
+         //console.log("meh");
      }       
 }
 
@@ -337,7 +338,7 @@ everyone.now.sendSMS = function(menteeId, smsbody){
                      sendSMS(fromNumber, toNumber, smsbody, function(err,data){
                          console.log(smsbody + " -> " + menteeId);        
                          var yourOwnMessage = {
-                             "menteeNumber" : menteeId,
+                             "menteeId" : menteeId,
                              "message": smsbody,
                              "name": mentor.name 
                          };        
