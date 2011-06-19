@@ -313,7 +313,7 @@ everyone.now.sendMessage = function(mentor, message, callback){
          sessionStore.get(this.user.sid, function(err,session){
              if(session.username == mentor.username){
                  console.log("Sending to mentor: " + JSON.stringify(message));
-                 this.now.incomingMessage(message);
+                 self.now.incomingMessage(message);
              }
          });
      }
