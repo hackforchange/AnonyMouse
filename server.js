@@ -3,7 +3,7 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = false;  //for dev
+var CURLONLY = true;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
@@ -275,16 +275,10 @@ app.post('/mentor/:username/message', function(req, res){
                         "message": message
                     };
                     
-                    everyone.now.sendMessage(mentor, reply, function(err,msg){
-                        var response = "";
-                        if(err){
-                            response = "ERROR:" + err;
-                        }
-                        else{
-                            response = "Mentee texting a mentor; sent: " + JSON.stringify(reply);
-                        }
-                        res.send(response);                                               
-                    });            
+                    everyone.now.sendMessage(mentor, reply); 
+                    
+                    var response = "Mentee texting a mentor; sent: " + JSON.stringify(reply);
+                    res.send(response);
                 }
             });              
         }
@@ -311,27 +305,20 @@ everyone.now.setSid = function(sid){
 
 //Inbound message from Twilio, need to send it to the right mentor.
 everyone.now.sendMessage = function(mentor, message, callback){         
-     var self = this;
-     if(!this.now){
-         console.log("Error, there is no this.now");
-         callback("No Now!", null);
-     }
+     var self = this;     
      
      if(this.user.sid){
          sessionStore.get(this.user.sid, function(err,session){
              if(session.username == mentor.username){
                  console.log("Sending to mentor: " + JSON.stringify(message));
                  self.now.incomingMessage(message);
-                 callback(null,message);
+                 //callback(null,message);
              }
          });
      }
-     else{         
-         
-         console.log("Twilio tried to sendMessage but failed: " + JSON.stringify(mentor) + " - " + JSON.stringify(message));
-         self.now.incomingMessage({"message":"Invalid sid, please set sid"});
-         callback("No sid",null);
-     }        
+     else{
+         //callback(null,null);
+     }       
 }
 
 //called by client to send a txt to a particular mentee
