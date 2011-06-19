@@ -318,7 +318,7 @@ everyone.now.sendMessage = function(mentor, message, callback){
          });
      }
      else{
-         console.log("Twilio tried to sendMessage but failed: " + mentor + " - " message);
+         console.log("Twilio tried to sendMessage but failed: " + mentor + " - " + message);
          this.now.incomingError("Invalid sid, please set sid");
          callback("error",null);
      }        
