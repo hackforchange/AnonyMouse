@@ -3,15 +3,15 @@
 
 //-------------GLOBAL STUFF-------------
 var PORT = process.env.PORT || 3000; 
-var CURLONLY = false;  //for dev
+var CURLONLY = true;  //for dev
 
 //Twilio stuff.
 var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
 var AUTH_TOKEN = '8894ebecf19122c98344b232291dc0bd';
 var MY_HOSTNAME = 'anonymouse.herokuapp.com';
 var sandboxNum = '+14155992671';
-var masterNum = '+14158774471';
-var aaronNum = '+14158774990'
+var masterNumber = '+14158774471';
+var aaronNumber = '+14158774990'
 
 //----------------------------------------
 
@@ -25,6 +25,8 @@ MemoryStore = require('connect').session.MemoryStore;
 var sessionStore = new MemoryStore(); //TODO:  Use something more robust instead of memory JEEEEZUS
 
 var nowjs = require('now');
+
+var db = require('./database.js');
 
 //----------------------------------------
 
@@ -68,6 +70,17 @@ var sendSMS = function(from, to, body, callback) {
     }      
 }
 
+var login = function(username, password, callback){
+    if(!username || !password){
+        
+    }
+    else{
+        //TODO:  Verify against db
+        
+    }
+    
+}
+
 var restricted = function(req, res, callnext){
     if (req.session.username) {
         callnext();
@@ -85,27 +98,38 @@ app.get('/', function(req, res){
 });
 //--------------------------------------
 
-app.get('/test', function(req, res){        
-    sendSMS(masterNum, sandboxNum, "Hi, I'm the anonymouse server and I'm alive!", function(err,data){
-       if(err){
-           console.log(err);
-       }else{
-           console.log("TEST SUCCESSFUL"); 
-           res.send("Test successful.");
-       }       
-    });    
-});
 
-//----------------API FOR TWILIO TO TALK TO--------------------
+//-------------GET API-------------
+app.get('/unanswered', function(req, res){        
+    var response = "";
+    db.getUnanswered(function(err,data){
+        if(err){
+            response = err;
+        }
+        else{
+            response = data;
+        }
+        res.send(response);
+    });       
+});
+//--------------------------------------
+
+//----------------POST API FOR TWILIO TO TALK TO--------------------
 app.post('/newseed', function(req, res){    
     var message = req.body.Body;
     var menteeNumber = req.body.From;
     
-    var reply = "Oh really? Tell me more about " + message;    
+    var reply = "Thanks, a mentor will be connecting with you soon!";    
     
-    sendSMS(masterNum, menteeNumber, reply, function(err,data){
-       console.log("SENT A REPLY TO: " + menteeNumber + " - " + reply); 
-    });    
+    db.createMentee(menteeNumber, message, function(err,data){
+        if(err){console.log(err)}
+        else{
+            sendSMS(masterNumber, menteeNumber, reply, function(err,data){
+               console.log("WELCOME: " + menteeNumber); 
+            });
+        }        
+    });
+           
 });
 
 app.post('/mentor/:id/message', function(req, res){
@@ -145,10 +169,9 @@ everyone.now.sendSMS = function(sid, menteeId, smsbody){
     //TODO: Get mentor object from sid, pull from session store.
     //var fromNumber= mentor.phoneNumber
     //var toNumber = database.getConvo(menteeId).phoneNumber
-    var fromNumber = aaronNum;
+    var fromNumber = aaronNumber;
     var toNumber = menteeId;
-    var self = this;
-    
+    var self = this;    
     
     sendSMS(fromNumber, toNumber, smsbody, function(err,data){
         console.log(smsbody + " -> " + menteeId);
