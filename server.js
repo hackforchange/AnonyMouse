@@ -6,12 +6,12 @@ var PORT = process.env.PORT || 3000;
 var CURLONLY = false;  //for dev
 
 //Twilio stuff.
-var ACCOUNT_SID = 'AC2a585784a06f7c0f435a82df2f567dbf';
-var AUTH_TOKEN = '8894ebecf19122c98344b232291dc0bd';
+var ACCOUNT_SID = 'blah';
+var AUTH_TOKEN = 'blah';
 var MY_HOSTNAME = 'anonymouse.herokuapp.com';
 var sandboxNum = '+14155992671';
-var masterNumber = '+14158774471';
-var aaronNumber = '+14158774990'
+var masterNumber = 'SOMENUMHERE';
+var aaronNumber = 'SOMENUMHERE'
 
 //----------------------------------------
 
